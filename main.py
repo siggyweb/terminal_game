@@ -1,0 +1,1 @@
+#Welcome to my first portolio project! I will be building a terminal game to play blackjack!
