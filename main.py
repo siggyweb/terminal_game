@@ -1,5 +1,12 @@
 #Welcome to my first portolio project! I will be building a terminal game to play blackjack!
 
+import random
+
+
+
+
+
+
 intro = """
 ___.   .__                 __          ____.              __       _________.__         
 \_ |__ |  | _____    ____ |  | __     |    |____    ____ |  | __  /   _____/|__| _____  
@@ -28,31 +35,8 @@ ___.   .__                 __          ____.              __       _________.__
 """
 
 
-
-
-        
-
-
-#Here create the user input required to begin the game. if yes run begin game and print the intro.
-
-
-#Deal initial cards to player and dealer
-
-
-#show all cards on the table (as a function)
-
-
-
-#assess dealer and player objects to see if playing is True, if either is true, continue gamne
-
-
-
-
-#when both players finished their plays, 
-
 suits = ["Hearts", "clubs", "Spades", "Diamonds"]
-values = [1,2,3,4,5,6,7,8,9,10,"Jack","Queen","King"]
-deck = []
+values = [2,3,4,5,6,7,8,9,10,"Jack","Queen","King"]
 
 #Create a function to intialise the deck for any fresh game
 def initialise_deck():
@@ -60,22 +44,55 @@ def initialise_deck():
     for suit in suits:
         for value in values:
             deck.append([suit,value])
+    return deck
+
+#Take initialised deck and shuffle it ready for game
+def game_deck(deck):
+    new_deck = random.shuffle(deck)
+    
+
+deck = initialise_deck()
+game_deck(deck)
+#print(deck)
 
 
 #Create the dealer/player class, do they need to be separate or the same?
-class Dealer:
-    dealers_hand = []
+class Player:
     is_playing = True
-    def __init__(self) -> None:
-        pass
+    def __init__(self,name) -> None:
+        self.name = name
+        self.hand = []
+        self.score = 0
     
     def __repr__(self) -> str:
-        return "This is the dealer, please dont touch!"
+        #Desc of the player
+        return "This is {}, please dont touch my cards!".format(self.name)
 
-    def begin_game():
-        pass
+    def calc_score():
+        #This will be the dominant function in deciding what will happen next in the game, players need their score to be able to progress accordingly.
+        total = 0
+        has_ace = False
+        for card in self.hand:
+            if (card[1] == "Jack" or card[1] == "Queen" or card[1] == "King"):
+                total += 10
+            elif (card[1] == "Ace"):
+                total += 11
+                has_ace = True
+        if (total > 21 and has_ace):
+            total -= 10
 
 
-initialise_deck() 
-print(deck)
+
+
+
         
+
+#Here create the user input required to begin the game. if yes run begin game and print the intro.
+
+#Deal initial cards to player and dealer
+
+#show all cards on the table (as a function)
+
+#assess dealer and player objects to see if playing is True, if either is true, continue gamne
+
+#when both players finished their plays, 
