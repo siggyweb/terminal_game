@@ -5,13 +5,11 @@ import random
 
 
 
-
-
 intro = """
 ___.   .__                 __          ____.              __       _________.__         
 \_ |__ |  | _____    ____ |  | __     |    |____    ____ |  | __  /   _____/|__| _____  
  | __ \|  | \__  \ _/ ___\|  |/ /     |    \__  \ _/ ___\|  |/ /  \_____  \ |  |/     \ 
- | \_\ \  |__/ __ \\  \___|    <  /\__|    |/ __ \\  \___|    <   /        \|  |  Y Y  \\
+ | \_\ \  |__/ __ \\  \___|    <  /\__|    |/ __  \  \___|    <   / ___ \  \|  |  |  Y Y \\
  |___  /____(____  /\___  >__|_ \ \________(____  /\___  >__|_ \ /_______  /|__|__|_|  /
      \/          \/     \/     \/               \/     \/     \/         \/          \/ 
                                                                                                   
@@ -52,8 +50,6 @@ def game_deck(deck):
     
 
 
-
-
 #Create the dealer/player class, do they need to be separate or the same?
 class Player:
     is_playing = True
@@ -76,17 +72,21 @@ class Player:
             elif (card[1] == "Ace"):
                 total += 11
                 has_ace = True
+            else:
+                total += card[1]
         if (total > 21 and has_ace):
             total -= 10
+        print("{name}'s score is: {points}".format(name=self.name,points=total))
+        self.score = total
 
     def show_dealer_cards(self):
         face_down_card = self.hand[0]
         face_up_cards = self.hand[1:]
-        print("you cannot see the dealer's first card. " + "You can see: " + face_up_cards)
+        print(""" \n ___________________________________________ \n you cannot see the dealer's first card. " + "You can see: " + str(face_up_cards) \n ___________________________________________ \n""")
         
 
     def show_player_cards(self):
-        print(self.hand)
+        print("My cards are: " + str(self.hand))
             
 
 
@@ -100,25 +100,73 @@ class Player:
 #Here create the user input required to begin the game. if yes run begin game and print the intro.
 print(intro)
 
-player_name = input("Hello player, what's your name?")
+player_name = input(""" \n ___________________________________________ \n Hello player, what's your name? \n ___________________________________________ \n""")
 ready_to_play = input("Would you like to play a game of chance? (y/n) ")
 
 if (ready_to_play.lower() == "y"):
     deck = initialise_deck()
     game_deck(deck)
-    print("Let's go!")
+    print(""" \n ___________________________________________ \n Let's go! \n ______________________________________________ \n""")
 else:
     "Come back another time!"
 
-#instantiate player and dealer objects
+#instantiate players and card objects
 player1 = Player(player_name)
 dealer = Player("Dealer")
+initialise_deck()
+game_deck(deck)
+
+#Deal initial cards to player and dealer and display opening hands
+print("""\n ___________________________________________ \n Opening Hands: \n ______________________________________________ \n""")
+player1.hand.append(deck.pop())
+player1.hand.append(deck.pop())
+player1.show_player_cards()
+player1.calc_score()
+
+dealer.hand.append(deck.pop())
+dealer.hand.append(deck.pop())
+dealer.show_dealer_cards()
+dealer.calc_score()
 
 
-#Deal initial cards to player and dealer
+#assess dealer and player objects to see if playing is True, if either is true, continue game until both are in agreement to declare a winner
 
-#show all cards on the table (as a function)
+while (player1.is_playing or dealer.is_playing):
+    next_move = input(""" \n ___________________________________________ \n Do you want to hit or stick? (hit/stick) \n ___________________________________________ \n""")
+    if (dealer.score < 17):
+        dealer.hand.append(deck.pop())
+        dealer.calc_score()
+        print("""\n ___________________________________________ \n" Dealer draws a card. \n ___________________________________________ \n""")
+        dealer.show_dealer_cards()
+    else:
+        dealer.is_playing = False
+    
+    if (next_move.lower() == "stick"):
+        player1.is_playing = False
+    elif (next_move.lower() == 'hit'):
+        player1.hand.append(deck.pop())
+        player1.calc_score()
+        print("\n ___________________________________________ \n{} draws a card. \n ___________________________________________ \n".format(player1.name))
+        player1.show_player_cards()
+    
+    
+#when both players finished their plays, it is time to calculate score and declare a winner!
 
-#assess dealer and player objects to see if playing is True, if either is true, continue gamne
+if (dealer.score > player1.score):
+    print(""" \n
 
-#when both players finished their plays, 
+█░█ █▀█ █░█ █▀ █▀▀   ▄▀█ █░░ █░█░█ ▄▀█ █▄█ █▀   █░█░█ █ █▄░█ █▀
+█▀█ █▄█ █▄█ ▄█ ██▄   █▀█ █▄▄ ▀▄▀▄▀ █▀█ ░█░ ▄█   ▀▄▀▄▀ █ █░▀█ ▄█
+   \n """)
+elif (dealer.score == player1.score):
+    print(
+        """ \n
+▀█▀ ▀▀█▀▀ █ █▀▀ 　 █▀▀█ 　 █▀▀▄ █▀▀█ █▀▀█ █░░░█ █ 
+▒█░ ░░█░░ ░ ▀▀█ 　 █▄▄█ 　 █░░█ █▄▄▀ █▄▄█ █▄█▄█ ▀ 
+▄█▄ ░░▀░░ ░ ▀▀▀ 　 ▀░░▀ 　 ▀▀▀░ ▀░▀▀ ▀░░▀ ░▀░▀░ ▄ \n"""
+    )
+else:
+    print("""\n
+▒█▀▀█ █▀▀█ █▀▀█ █▀▀▄ 　 █▀▀ █░░█ █▀▀█ █▀▀█ ▀▀█▀▀ ░▀░ █▀▀▄ █▀▀▀ 　 ▒█▀▀█ █▀▀█ █░░░█ █▀▀▄ █▀▀█ █░░█ █ 
+▒█░▄▄ █░░█ █░░█ █░░█ 　 ▀▀█ █▀▀█ █░░█ █░░█ ░░█░░ ▀█▀ █░░█ █░▀█ 　 ▒█░░░ █░░█ █▄█▄█ █▀▀▄ █░░█ █▄▄█ ▀ 
+▒█▄▄█ ▀▀▀▀ ▀▀▀▀ ▀▀▀░ 　 ▀▀▀ ▀░░▀ ▀▀▀▀ ▀▀▀▀ ░░▀░░ ▀▀▀ ▀░░▀ ▀▀▀▀ 　 ▒█▄▄█ ▀▀▀▀ ░▀░▀░ ▀▀▀░ ▀▀▀▀ ▄▄▄█ ▄ \n""")
