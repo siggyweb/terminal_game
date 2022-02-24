@@ -32,6 +32,23 @@ ___.   .__                 __          ____.              __       _________.__
                                                                                                                                                                                                    
 """
 
+house_wins = """ \n
+
+█░█ █▀█ █░█ █▀ █▀▀   ▄▀█ █░░ █░█░█ ▄▀█ █▄█ █▀   █░█░█ █ █▄░█ █▀
+█▀█ █▄█ █▄█ ▄█ ██▄   █▀█ █▄▄ ▀▄▀▄▀ █▀█ ░█░ ▄█   ▀▄▀▄▀ █ █░▀█ ▄█
+   \n """
+
+draw = """ \n
+▀█▀ ▀▀█▀▀ █ █▀▀ 　 █▀▀█ 　 █▀▀▄ █▀▀█ █▀▀█ █░░░█ █ 
+▒█░ ░░█░░ ░ ▀▀█ 　 █▄▄█ 　 █░░█ █▄▄▀ █▄▄█ █▄█▄█ ▀ 
+▄█▄ ░░▀░░ ░ ▀▀▀ 　 ▀░░▀ 　 ▀▀▀░ ▀░▀▀ ▀░░▀ ░▀░▀░ ▄ \n"""
+
+
+player_wins = """\n
+▒█▀▀█ █▀▀█ █▀▀█ █▀▀▄ 　 █▀▀ █░░█ █▀▀█ █▀▀█ ▀▀█▀▀ ░▀░ █▀▀▄ █▀▀▀ 　 ▒█▀▀█ █▀▀█ █░░░█ █▀▀▄ █▀▀█ █░░█ █ 
+▒█░▄▄ █░░█ █░░█ █░░█ 　 ▀▀█ █▀▀█ █░░█ █░░█ ░░█░░ ▀█▀ █░░█ █░▀█ 　 ▒█░░░ █░░█ █▄█▄█ █▀▀▄ █░░█ █▄▄█ ▀ 
+▒█▄▄█ ▀▀▀▀ ▀▀▀▀ ▀▀▀░ 　 ▀▀▀ ▀░░▀ ▀▀▀▀ ▀▀▀▀ ░░▀░░ ▀▀▀ ▀░░▀ ▀▀▀▀ 　 ▒█▄▄█ ▀▀▀▀ ░▀░▀░ ▀▀▀░ ▀▀▀▀ ▄▄▄█ ▄ \n"""
+
 
 suits = ["Hearts", "clubs", "Spades", "Diamonds"]
 values = [2,3,4,5,6,7,8,9,10,"Jack","Queen","King"]
@@ -82,7 +99,7 @@ class Player:
     def show_dealer_cards(self):
         face_down_card = self.hand[0]
         face_up_cards = self.hand[1:]
-        print(""" \n ___________________________________________ \n you cannot see the dealer's first card. " + "You can see: " + str(face_up_cards) \n ___________________________________________ \n""")
+        print(" \n ___________________________________________ \n \n you cannot see the dealer's first card. " + "You can see: " + str(face_up_cards) + "\n ___________________________________________ \n")
         
 
     def show_player_cards(self):
@@ -90,7 +107,9 @@ class Player:
             
 
 
-
+def end_game(p1,p2):
+    p1.is_playing = False
+    p2.is_playing = False
 
 
 
@@ -100,13 +119,13 @@ class Player:
 #Here create the user input required to begin the game. if yes run begin game and print the intro.
 print(intro)
 
-player_name = input(""" \n ___________________________________________ \n Hello player, what's your name? \n ___________________________________________ \n""")
+player_name = input(""" \n ___________________________________________ \n \n Hello player, what's your name? \n ___________________________________________ \n""")
 ready_to_play = input("Would you like to play a game of chance? (y/n) ")
 
 if (ready_to_play.lower() == "y"):
     deck = initialise_deck()
     game_deck(deck)
-    print(""" \n ___________________________________________ \n Let's go! \n ______________________________________________ \n""")
+    print(""" \n ___________________________________________ \n  \n Let's go! \n ______________________________________________ \n""")
 else:
     "Come back another time!"
 
@@ -117,7 +136,7 @@ initialise_deck()
 game_deck(deck)
 
 #Deal initial cards to player and dealer and display opening hands
-print("""\n ___________________________________________ \n Opening Hands: \n ______________________________________________ \n""")
+print("""\n ___________________________________________ \n \n Opening Hands: \n ______________________________________________ \n""")
 player1.hand.append(deck.pop())
 player1.hand.append(deck.pop())
 player1.show_player_cards()
@@ -136,8 +155,12 @@ while (player1.is_playing or dealer.is_playing):
     if (dealer.score < 17):
         dealer.hand.append(deck.pop())
         dealer.calc_score()
-        print("""\n ___________________________________________ \n" Dealer draws a card. \n ___________________________________________ \n""")
+        print("""\n ___________________________________________ \n \n" Dealer draws a card. \n ___________________________________________ \n""")
         dealer.show_dealer_cards()
+        if (dealer.score > 21):
+            print("""\n ___________________________________________ \n \n" Dealer has gone bust. \n ___________________________________________ \n""")
+            end_game(player1,dealer)
+            
     else:
         dealer.is_playing = False
     
@@ -145,28 +168,18 @@ while (player1.is_playing or dealer.is_playing):
         player1.is_playing = False
     elif (next_move.lower() == 'hit'):
         player1.hand.append(deck.pop())
-        player1.calc_score()
-        print("\n ___________________________________________ \n{} draws a card. \n ___________________________________________ \n".format(player1.name))
+        print("\n ___________________________________________ \n \n {} draws a card. \n ___________________________________________ \n".format(player1.name))
         player1.show_player_cards()
-    
+        player1.calc_score()
+        if (player1.score > 21):
+            print("""\n ___________________________________________ \n \n" {} has gone bust. \n ___________________________________________ \n""".format(player1.name))
+            end_game(player1,dealer)
     
 #when both players finished their plays, it is time to calculate score and declare a winner!
 
 if (dealer.score > player1.score):
-    print(""" \n
-
-█░█ █▀█ █░█ █▀ █▀▀   ▄▀█ █░░ █░█░█ ▄▀█ █▄█ █▀   █░█░█ █ █▄░█ █▀
-█▀█ █▄█ █▄█ ▄█ ██▄   █▀█ █▄▄ ▀▄▀▄▀ █▀█ ░█░ ▄█   ▀▄▀▄▀ █ █░▀█ ▄█
-   \n """)
+    print(house_wins)
 elif (dealer.score == player1.score):
-    print(
-        """ \n
-▀█▀ ▀▀█▀▀ █ █▀▀ 　 █▀▀█ 　 █▀▀▄ █▀▀█ █▀▀█ █░░░█ █ 
-▒█░ ░░█░░ ░ ▀▀█ 　 █▄▄█ 　 █░░█ █▄▄▀ █▄▄█ █▄█▄█ ▀ 
-▄█▄ ░░▀░░ ░ ▀▀▀ 　 ▀░░▀ 　 ▀▀▀░ ▀░▀▀ ▀░░▀ ░▀░▀░ ▄ \n"""
-    )
+    print(draw)
 else:
-    print("""\n
-▒█▀▀█ █▀▀█ █▀▀█ █▀▀▄ 　 █▀▀ █░░█ █▀▀█ █▀▀█ ▀▀█▀▀ ░▀░ █▀▀▄ █▀▀▀ 　 ▒█▀▀█ █▀▀█ █░░░█ █▀▀▄ █▀▀█ █░░█ █ 
-▒█░▄▄ █░░█ █░░█ █░░█ 　 ▀▀█ █▀▀█ █░░█ █░░█ ░░█░░ ▀█▀ █░░█ █░▀█ 　 ▒█░░░ █░░█ █▄█▄█ █▀▀▄ █░░█ █▄▄█ ▀ 
-▒█▄▄█ ▀▀▀▀ ▀▀▀▀ ▀▀▀░ 　 ▀▀▀ ▀░░▀ ▀▀▀▀ ▀▀▀▀ ░░▀░░ ▀▀▀ ▀░░▀ ▀▀▀▀ 　 ▒█▄▄█ ▀▀▀▀ ░▀░▀░ ▀▀▀░ ▀▀▀▀ ▄▄▄█ ▄ \n""")
+    print(player_wins)
