@@ -11,7 +11,7 @@ intro = """
 ___.   .__                 __          ____.              __       _________.__         
 \_ |__ |  | _____    ____ |  | __     |    |____    ____ |  | __  /   _____/|__| _____  
  | __ \|  | \__  \ _/ ___\|  |/ /     |    \__  \ _/ ___\|  |/ /  \_____  \ |  |/     \ 
- | \_\ \  |__/ __ \\  \___|    <  /\__|    |/ __ \\  \___|    <   /        \|  |  Y Y  \
+ | \_\ \  |__/ __ \\  \___|    <  /\__|    |/ __ \\  \___|    <   /        \|  |  Y Y  \\
  |___  /____(____  /\___  >__|_ \ \________(____  /\___  >__|_ \ /_______  /|__|__|_|  /
      \/          \/     \/     \/               \/     \/     \/         \/          \/ 
                                                                                                   
@@ -22,7 +22,7 @@ ___.   .__                 __          ____.              __       _________.__
                                                                                                                                                                                                      
 
                                                 .___     _________ 
-                    _______   ____ _____     __| _/__.__.\_____   \
+                    _______   ____ _____     __| _/__.__.\_____   \\
                     \_  __ \_/ __ \\__  \   / __ <   |  |   /   __/
                     |  | \/\  ___/ / __ \_/ /_/ |\___  |  |   |   
                     |__|    \___  >____  /\____ |/ ____|  |___|   
@@ -51,9 +51,7 @@ def game_deck(deck):
     new_deck = random.shuffle(deck)
     
 
-deck = initialise_deck()
-game_deck(deck)
-#print(deck)
+
 
 
 #Create the dealer/player class, do they need to be separate or the same?
@@ -68,7 +66,7 @@ class Player:
         #Desc of the player
         return "This is {}, please dont touch my cards!".format(self.name)
 
-    def calc_score():
+    def calc_score(self):
         #This will be the dominant function in deciding what will happen next in the game, players need their score to be able to progress accordingly.
         total = 0
         has_ace = False
@@ -81,6 +79,18 @@ class Player:
         if (total > 21 and has_ace):
             total -= 10
 
+    def show_dealer_cards(self):
+        face_down_card = self.hand[0]
+        face_up_cards = self.hand[1:]
+        print("you cannot see the dealer's first card. " + "You can see: " + face_up_cards)
+        
+
+    def show_player_cards(self):
+        print(self.hand)
+            
+
+
+
 
 
 
@@ -88,6 +98,22 @@ class Player:
         
 
 #Here create the user input required to begin the game. if yes run begin game and print the intro.
+print(intro)
+
+player_name = input("Hello player, what's your name?")
+ready_to_play = input("Would you like to play a game of chance? (y/n) ")
+
+if (ready_to_play.lower() == "y"):
+    deck = initialise_deck()
+    game_deck(deck)
+    print("Let's go!")
+else:
+    "Come back another time!"
+
+#instantiate player and dealer objects
+player1 = Player(player_name)
+dealer = Player("Dealer")
+
 
 #Deal initial cards to player and dealer
 
