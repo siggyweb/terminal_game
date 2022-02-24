@@ -70,6 +70,7 @@ def game_deck(deck):
 #Create the dealer/player class, do they need to be separate or the same?
 class Player:
     is_playing = True
+    is_bust = False
     def __init__(self,name) -> None:
         self.name = name
         self.hand = []
@@ -106,7 +107,7 @@ class Player:
         print("My cards are: " + str(self.hand))
             
 
-
+#Function to end the game, has been tested.
 def end_game(p1,p2):
     p1.is_playing = False
     p2.is_playing = False
@@ -154,11 +155,13 @@ while (player1.is_playing or dealer.is_playing):
     next_move = input(""" \n ___________________________________________ \n Do you want to hit or stick? (hit/stick) \n ___________________________________________ \n""")
     if (dealer.score < 17):
         dealer.hand.append(deck.pop())
-        dealer.calc_score()
+        
         print("""\n ___________________________________________ \n \n" Dealer draws a card. \n ___________________________________________ \n""")
+        dealer.calc_score()
         dealer.show_dealer_cards()
         if (dealer.score > 21):
             print("""\n ___________________________________________ \n \n" Dealer has gone bust. \n ___________________________________________ \n""")
+            dealer.is_bust = True
             end_game(player1,dealer)
             
     else:
@@ -173,13 +176,17 @@ while (player1.is_playing or dealer.is_playing):
         player1.calc_score()
         if (player1.score > 21):
             print("""\n ___________________________________________ \n \n" {} has gone bust. \n ___________________________________________ \n""".format(player1.name))
+            player1.is_bust = True
             end_game(player1,dealer)
     
 #when both players finished their plays, it is time to calculate score and declare a winner!
-
-if (dealer.score > player1.score):
+if (player1.is_bust and not dealer.is_bust):
     print(house_wins)
+elif (not player1.is_bust and dealer.is_bust):
+    print(player_wins)
+elif (dealer.score > player1.score and not dealer.is_bust):
+    print(house_wins)
+elif (player1.score > dealer.score and not player1.is_bust):
+    print(player_wins)
 elif (dealer.score == player1.score):
     print(draw)
-else:
-    print(player_wins)
