@@ -30,6 +30,7 @@ player1.hand.append(deck.pop())
 player1.hand.append(deck.pop())
 player1.show_player_cards()
 player1.calc_score()
+player1.show_score()
 
 dealer.hand.append(deck.pop())
 dealer.hand.append(deck.pop())
@@ -45,31 +46,41 @@ while (player1.is_playing or dealer.is_playing):
         player1.is_playing = False
     elif (next_move.lower() == 'hit'):
         player1.hand.append(deck.pop())
-        print("\n ___________________________________________ \n \n {} draws a card. \n ___________________________________________ \n".format(player1.name))
+        print("\n ___________________________________________ \n \n {} receives a new card. \n ___________________________________________ \n".format(player1.name))
         player1.show_player_cards()
         player1.calc_score()
+        player1.show_score()
         if (player1.score > 21):
             print("""\n ___________________________________________ \n \n" {} has gone bust. \n ___________________________________________ \n""".format(player1.name))
             player1.is_bust = True
             end_game(player1,dealer)
+            break
     
     if (dealer.score < 17):
         dealer.hand.append(deck.pop())
         
-        print("""\n ___________________________________________ \n \n" Dealer draws a card. \n ___________________________________________ \n""")
+        print("""\n ___________________________________________ \n \n" Dealer draws a new card. \n ___________________________________________ \n""")
         dealer.calc_score()
         dealer.show_dealer_cards()
         if (dealer.score > 21):
+            dealer.show_score
             print("""\n ___________________________________________ \n \n" Dealer has gone bust. \n ___________________________________________ \n""")
+            dealer.show_score()
             dealer.is_bust = True
             end_game(player1,dealer)
+            break
             
     else:
         dealer.is_playing = False
     
+
+#All players must show their hand to announce a winner fairly.
+player1.show_player_cards()
+dealer.show_player_cards()
+
+
     
-    
-#when both players finished their plays, it is time to calculate score and declare a winner!
+#Now both players have finished their plays, it is time to declare a winner!
 if (player1.is_bust and not dealer.is_bust):
     print(house_wins)
 elif (not player1.is_bust and dealer.is_bust):

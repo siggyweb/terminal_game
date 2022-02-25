@@ -92,8 +92,11 @@ class Player:
                 total += card[1]
         if (total > 21 and has_ace):
             total -= 10
-        print("{name}'s score is: {points}".format(name=self.name,points=total))
         self.score = total
+
+
+    def show_score(self):
+         print("{name}'s score is: {points}".format(name=self.name,points=self.score))   
 
     def show_dealer_cards(self):
         face_down_card = self.hand[0]
@@ -102,7 +105,7 @@ class Player:
         
 
     def show_player_cards(self):
-        print("My cards are: " + str(self.hand))
+        print(" \n {name}'s cards are: ".format(name=self.name) + str(self.hand))
             
 
 #Function to end the game, has been tested.
